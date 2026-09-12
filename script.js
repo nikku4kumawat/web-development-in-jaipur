@@ -65,143 +65,173 @@
 
 
 
+/* =========================================================
+   AGILE SOLUTIONS - SERVICES SECTION JS
+   ========================================================= */
 
-//   Service section js 
 document.addEventListener("DOMContentLoaded", function () {
+    const servicesScroll = document.querySelector(".agile-services-scroll");
+    const servicesGrid = document.querySelector(".agile-services-grid");
 
-const servicesScroll = document.querySelector(".agile-services-scroll");
+    const leftArrow = document.querySelector(".agile-mobile-scroll-left");
+    const rightArrow = document.querySelector(".agile-mobile-scroll-right");
 
-const leftArrow = document.querySelector(".agile-mobile-scroll-left");
-
-const rightArrow = document.querySelector(".agile-mobile-scroll-right");
-
-if (!servicesScroll) {
-    return;
-}
-
-// Existing mouse-wheel horizontal scrolling for smaller screens.
-servicesScroll.addEventListener(
-    "wheel",
-    function (event) {
-        if (
-            window.innerWidth <= 900 &&
-            Math.abs(event.deltaY) > Math.abs(event.deltaX)
-        ) {
-            event.preventDefault();
-            servicesScroll.scrollLeft += event.deltaY;
-        }
-    },
-    { passive: false }
-);
-
-// Mobile arrows: move exactly one card at a time.
-function getCardMoveAmount() {
-    const card = servicesScroll.querySelector(".agile-service-card");
-
-    if (!card) {
-        return 282;
-    }
-
-    const cardWidth = card.getBoundingClientRect().width;
-    const gap = 12;
-
-    return cardWidth + gap;
-}
-
-function updateArrowState() {
-    if (!leftArrow || !rightArrow || window.innerWidth > 600) {
+    if (!servicesScroll || !servicesGrid) {
         return;
     }
 
-    const maxScroll =
-        servicesScroll.scrollWidth - servicesScroll.clientWidth;
-
-    leftArrow.classList.toggle(
-        "is-disabled",
-        servicesScroll.scrollLeft <= 2
+    /* ---------------------------------------------------------
+       Desktop / small-screen mouse wheel
+       Convert vertical mouse wheel to horizontal scrolling
+       only when horizontal service scrolling is active.
+       --------------------------------------------------------- */
+    servicesScroll.addEventListener(
+        "wheel",
+        function (event) {
+            if (
+                window.innerWidth <= 900 &&
+                Math.abs(event.deltaY) > Math.abs(event.deltaX)
+            ) {
+                event.preventDefault();
+                servicesScroll.scrollLeft += event.deltaY;
+            }
+        },
+        { passive: false }
     );
 
-    rightArrow.classList.toggle(
-        "is-disabled",
-        servicesScroll.scrollLeft >= maxScroll - 2
-    );
-}
+    /* ---------------------------------------------------------
+       MOBILE:
+       3 columns are visible at once.
+       One arrow click moves exactly ONE SCREEN = 3 columns.
+       Because the grid is 2 rows x 6 columns with
+       grid-auto-flow: column, both rows move together.
+       --------------------------------------------------------- */
+    function getScreenMoveAmount() {
+        if (window.innerWidth > 600) {
+            return 0;
+        }
 
-if (leftArrow) {
-    leftArrow.addEventListener("click", function () {
+        const firstCard = servicesGrid.querySelector(".agile-service-card");
+
+        if (!firstCard) {
+            return servicesScroll.clientWidth;
+        }
+
+        const cardWidth = firstCard.getBoundingClientRect().width;
+
+        // CSS mobile column gap = 10px.
+        const columnGap = 10;
+
+        // 3 cards/columns are visible per screen.
+        return (cardWidth + columnGap) * 3;
+    }
+
+    function getMaxScroll() {
+        return Math.max(
+            0,
+            servicesScroll.scrollWidth - servicesScroll.clientWidth
+        );
+    }
+
+    function updateArrowState() {
+        if (!leftArrow || !rightArrow) {
+            return;
+        }
+
+        // Arrows are only displayed by CSS on mobile.
+        if (window.innerWidth > 600) {
+            leftArrow.classList.remove("is-disabled");
+            rightArrow.classList.remove("is-disabled");
+            return;
+        }
+
+        const maxScroll = getMaxScroll();
+        const currentScroll = servicesScroll.scrollLeft;
+
+        leftArrow.classList.toggle(
+            "is-disabled",
+            currentScroll <= 2
+        );
+
+        rightArrow.classList.toggle(
+            "is-disabled",
+            currentScroll >= maxScroll - 2
+        );
+    }
+
+    function moveServices(direction) {
+        if (window.innerWidth > 600) {
+            return;
+        }
+
+        const amount = getScreenMoveAmount();
+
         servicesScroll.scrollBy({
-            left: -getCardMoveAmount(),
+            left: direction * amount,
             behavior: "smooth"
         });
-    });
-}
+    }
 
-if (rightArrow) {
-    rightArrow.addEventListener("click", function () {
-        servicesScroll.scrollBy({
-            left: getCardMoveAmount(),
-            behavior: "smooth"
+    if (leftArrow) {
+        leftArrow.addEventListener("click", function () {
+            moveServices(-1);
         });
-    });
-}
+    }
 
-servicesScroll.addEventListener("scroll", updateArrowState);
-window.addEventListener("resize", updateArrowState);
+    if (rightArrow) {
+        rightArrow.addEventListener("click", function () {
+            moveServices(1);
+        });
+    }
 
-updateArrowState();
+    servicesScroll.addEventListener("scroll", updateArrowState);
+    window.addEventListener("resize", updateArrowState);
 
-
+    updateArrowState();
 });
+
 
 /* =========================================================
-
-SERVICE CARD -> WHATSAPP
-
-========================================================= */
+   SERVICE CARD -> WHATSAPP
+   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
+    const serviceCards = document.querySelectorAll(".agile-service-card");
 
-const serviceCards = document.querySelectorAll(".agile-service-card");
+    const whatsappNumber = "918005677079";
 
+    const whatsappMessage =
+        "Hello Agile Solutions, I want to discuss a web or software development project.";
 
-const whatsappNumber = "918005677079";
-const whatsappMessage =
-    "Hello Agile Solutions, I want to discuss a web or software development project.";
+    const whatsappURL =
+        "https://wa.me/" +
+        whatsappNumber +
+        "?text=" +
+        encodeURIComponent(whatsappMessage);
 
-const whatsappURL =
-    "https://wa.me/" + 
-    whatsappNumber + 
-    "?text=" + 
-    encodeURIComponent(whatsappMessage); 
+    function openWhatsApp() {
+        window.open(whatsappURL, "_blank", "noopener,noreferrer");
+    }
 
-function openWhatsApp() { 
-    window.open(whatsappURL, "_blank", "noopener,noreferrer"); 
-} 
+    serviceCards.forEach(function (card) {
+        card.addEventListener("click", function (event) {
+            // Do not trigger WhatsApp if an actual link/button
+            // inside the card is clicked.
+            if (event.target.closest("a, button")) {
+                return;
+            }
 
-serviceCards.forEach(function (card) { 
-    card.addEventListener("click", function (event) { 
-        // Do not trigger WhatsApp if an actual link/button inside the card is clicked. 
-        if (event.target.closest("a, button")) { 
-            return; 
-        } 
+            openWhatsApp();
+        });
 
-        openWhatsApp(); 
-    }); 
-
-    card.addEventListener("keydown", function (event) { 
-        if (event.key === "Enter" || event.key === " ") { 
-            event.preventDefault(); 
-            openWhatsApp(); 
-        } 
-    }); 
-}); 
-
-
+        card.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openWhatsApp();
+            }
+        });
+    });
 });
-
-
-
-
 
 
 
@@ -357,4 +387,157 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
+});
+
+
+
+
+
+
+
+/* =========================================================
+   AGILE SOLUTIONS - INDUSTRIES MOBILE SLIDER
+   - Arrow navigation
+   - Touch/swipe navigation
+   - Desktop image is never used on mobile
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const mobileImage = document.getElementById("industryMobileImage");
+    const slider = document.querySelector(".industries-mobile-view");
+    const leftArrow = document.querySelector(".industry-arrow-left");
+    const rightArrow = document.querySelector(".industry-arrow-right");
+
+    if (!mobileImage || !slider || !leftArrow || !rightArrow) {
+        return;
+    }
+
+    const slides = [
+        {
+            src: "assets/industries-mobile-1.jpg",
+            alt: "Industries served by our website designing company - first mobile view"
+        },
+        {
+            src: "assets/industries-mobile-2.jpg",
+            alt: "Industries served by our website designing company - second mobile view"
+        }
+    ];
+
+    let currentSlide = 0;
+
+    function showSlide(index) {
+
+        currentSlide = Math.max(
+            0,
+            Math.min(index, slides.length - 1)
+        );
+
+        mobileImage.src = slides[currentSlide].src;
+        mobileImage.alt = slides[currentSlide].alt;
+
+        leftArrow.classList.toggle(
+            "is-disabled",
+            currentSlide === 0
+        );
+
+        rightArrow.classList.toggle(
+            "is-disabled",
+            currentSlide === slides.length - 1
+        );
+    }
+
+    /* =========================
+       ARROW CLICK
+       ========================= */
+
+    leftArrow.addEventListener("click", function () {
+        if (currentSlide > 0) {
+            showSlide(currentSlide - 1);
+        }
+    });
+
+    rightArrow.addEventListener("click", function () {
+        if (currentSlide < slides.length - 1) {
+            showSlide(currentSlide + 1);
+        }
+    });
+
+    /* =========================
+       TOUCH / SWIPE
+       ========================= */
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    const swipeThreshold = 45;
+
+    slider.addEventListener(
+        "touchstart",
+        function (event) {
+
+            if (!event.touches || !event.touches.length) {
+                return;
+            }
+
+            touchStartX = event.touches[0].clientX;
+            touchStartY = event.touches[0].clientY;
+
+            touchEndX = touchStartX;
+            touchEndY = touchStartY;
+        },
+        { passive: true }
+    );
+
+    slider.addEventListener(
+        "touchmove",
+        function (event) {
+
+            if (!event.touches || !event.touches.length) {
+                return;
+            }
+
+            touchEndX = event.touches[0].clientX;
+            touchEndY = event.touches[0].clientY;
+        },
+        { passive: true }
+    );
+
+    slider.addEventListener(
+        "touchend",
+        function () {
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            /* Ignore mostly vertical finger movement */
+            if (Math.abs(deltaX) <= Math.abs(deltaY)) {
+                return;
+            }
+
+            /* Swipe LEFT = next image */
+            if (deltaX < -swipeThreshold) {
+
+                if (currentSlide < slides.length - 1) {
+                    showSlide(currentSlide + 1);
+                }
+
+                return;
+            }
+
+            /* Swipe RIGHT = previous image */
+            if (deltaX > swipeThreshold) {
+
+                if (currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            }
+        },
+        { passive: true }
+    );
+
+    /* Start on mobile image 1 */
+    showSlide(0);
 });
