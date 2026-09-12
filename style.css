@@ -643,6 +643,20 @@ h1 span{color:var(--blue)}
     align-items:center;
   }
 
+   .stat, 
+  .stat:first-child{ 
+    min-width:0; 
+    padding:6px 4px; 
+    border-right:0;
+    border-bottom:0; 
+    text-align:center; 
+    align-items:center; 
+  }
+
+  .stat:last-child{ 
+    border-right:0; 
+  }
+
   .stat:last-child{
     border-right:0;
   }
@@ -1057,6 +1071,8 @@ body {
    TABLET / SMALL LAPTOP
    Keep the same 6 + 6 desktop-style grid.
    ========================================================= */
+
+   
 @media (max-width: 900px) {
     .agile-services-section {
         padding: 45px 15px 55px;
