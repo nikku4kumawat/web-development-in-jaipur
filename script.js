@@ -592,3 +592,222 @@ document.addEventListener("DOMContentLoaded", function () {
     startAutoSlide();
 
 });
+
+
+
+
+
+
+
+/* =========================================
+   AGILE REVIEWS CAROUSEL
+   - Desktop/tablet: 4 cards visible
+   - Mobile: 2 cards visible
+   - Auto slide
+   - Previous/next arrows
+   - Touch/swipe support
+   - Infinite loop
+   ========================================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const slider = document.getElementById("reviewsSlider");
+  const track = document.getElementById("reviewsTrack");
+  const prevBtn = document.querySelector(".review-prev");
+  const nextBtn = document.querySelector(".review-next");
+
+  if (!slider || !track || !prevBtn || !nextBtn) return;
+
+  const originalCards = Array.from(track.children);
+  const realCount = originalCards.length;
+
+  // Clone reviews for a smooth infinite carousel.
+  originalCards.forEach((card) => {
+    track.appendChild(card.cloneNode(true));
+  });
+
+  const allCards = Array.from(track.children);
+
+  const whatsappNumber = "918005677079";
+  const whatsappMessage =
+    "Hello Agile Solutions, I want to discuss a web or software development project.";
+
+  let currentIndex = 0;
+  let autoTimer = null;
+  let isAnimating = false;
+  let startX = 0;
+  let currentX = 0;
+  let isTouching = false;
+
+  function isMobile() {
+    return window.innerWidth <= 767;
+  }
+
+  function getStep() {
+    const card = allCards[0];
+    if (!card) return 0;
+
+    const styles = window.getComputedStyle(track);
+    const gap = parseFloat(styles.columnGap || styles.gap || 0);
+
+    return card.getBoundingClientRect().width + gap;
+  }
+
+  function applyTransform(animate = true) {
+    track.style.transition = animate
+      ? "transform 600ms cubic-bezier(.22, .61, .36, 1)"
+      : "none";
+
+    track.style.transform =
+      `translate3d(-${currentIndex * getStep()}px, 0, 0)`;
+  }
+
+  function goTo(index) {
+    if (!isMobile() || isAnimating) return;
+
+    currentIndex = index;
+    isAnimating = true;
+    applyTransform(true);
+
+    window.setTimeout(() => {
+      if (currentIndex >= realCount) {
+        currentIndex = 0;
+        applyTransform(false);
+      }
+
+      if (currentIndex < 0) {
+        currentIndex = realCount - 1;
+        applyTransform(false);
+      }
+
+      isAnimating = false;
+    }, 630);
+  }
+
+  function next() {
+    goTo(currentIndex + 1);
+  }
+
+  function previous() {
+    if (!isMobile()) return;
+
+    if (currentIndex === 0) {
+      currentIndex = realCount;
+      applyTransform(false);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          goTo(realCount - 1);
+        });
+      });
+      return;
+    }
+
+    goTo(currentIndex - 1);
+  }
+
+  function startAutoSlide() {
+    stopAutoSlide();
+
+    // Auto-slide is mobile-only.
+    if (isMobile()) {
+      autoTimer = setInterval(next, 4000);
+    }
+  }
+
+  function stopAutoSlide() {
+    if (autoTimer) {
+      clearInterval(autoTimer);
+      autoTimer = null;
+    }
+  }
+
+  function openWhatsApp() {
+    const url =
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  // Every original + cloned review card opens WhatsApp.
+  allCards.forEach((card) => {
+    card.addEventListener("click", (event) => {
+      if (event.target.closest("button, a")) return;
+      openWhatsApp();
+    });
+
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openWhatsApp();
+      }
+    });
+  });
+
+  // Arrows only perform carousel movement on mobile.
+  nextBtn.addEventListener("click", () => {
+    next();
+    startAutoSlide();
+  });
+
+  prevBtn.addEventListener("click", () => {
+    previous();
+    startAutoSlide();
+  });
+
+  // Touch/swipe on mobile.
+  slider.addEventListener("touchstart", (event) => {
+    if (!isMobile() || !event.touches[0]) return;
+
+    isTouching = true;
+    startX = event.touches[0].clientX;
+    currentX = startX;
+    stopAutoSlide();
+  }, { passive: true });
+
+  slider.addEventListener("touchmove", (event) => {
+    if (!isTouching || !event.touches[0]) return;
+    currentX = event.touches[0].clientX;
+  }, { passive: true });
+
+  slider.addEventListener("touchend", () => {
+    if (!isTouching) return;
+
+    const difference = currentX - startX;
+    isTouching = false;
+
+    if (Math.abs(difference) > 45) {
+      if (difference < 0) {
+        next();
+      } else {
+        previous();
+      }
+    }
+
+    startAutoSlide();
+  });
+
+  // Pause auto-slide while the mobile user is interacting.
+  slider.addEventListener("mouseenter", stopAutoSlide);
+  slider.addEventListener("mouseleave", startAutoSlide);
+
+  // Keep layout correct after rotation/resizing.
+  let resizeTimer;
+
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+
+    resizeTimer = setTimeout(() => {
+      if (!isMobile()) {
+        currentIndex = 0;
+        applyTransform(false);
+        stopAutoSlide();
+      } else {
+        applyTransform(false);
+        startAutoSlide();
+      }
+    }, 150);
+  });
+
+  // Initial state.
+  applyTransform(false);
+  startAutoSlide();
+});
