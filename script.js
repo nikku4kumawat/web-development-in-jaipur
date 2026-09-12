@@ -393,151 +393,202 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
 /* =========================================================
-   AGILE SOLUTIONS - INDUSTRIES MOBILE SLIDER
-   - Arrow navigation
-   - Touch/swipe navigation
-   - Desktop image is never used on mobile
+   INDUSTRIES MOBILE IMAGE SLIDER
+   - Left / Right arrows
+   - Touch swipe
+   - Auto slide
+   - Desktop image unaffected
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
 
     const mobileImage = document.getElementById("industryMobileImage");
-    const slider = document.querySelector(".industries-mobile-view");
     const leftArrow = document.querySelector(".industry-arrow-left");
     const rightArrow = document.querySelector(".industry-arrow-right");
 
-    if (!mobileImage || !slider || !leftArrow || !rightArrow) {
+    if (!mobileImage || !leftArrow || !rightArrow) {
         return;
     }
 
     const slides = [
         {
             src: "assets/industries-mobile-1.jpg",
-            alt: "Industries served by our website designing company - first mobile view"
+            alt: "Industries served - mobile view 1"
         },
         {
             src: "assets/industries-mobile-2.jpg",
-            alt: "Industries served by our website designing company - second mobile view"
+            alt: "Industries served - mobile view 2"
         }
     ];
 
     let currentSlide = 0;
 
+    /* ---------------------------------------------------------
+       SHOW SLIDE
+    --------------------------------------------------------- */
+
     function showSlide(index) {
 
-        currentSlide = Math.max(
-            0,
-            Math.min(index, slides.length - 1)
-        );
+        currentSlide =
+            (index + slides.length) % slides.length;
 
         mobileImage.src = slides[currentSlide].src;
         mobileImage.alt = slides[currentSlide].alt;
 
-        leftArrow.classList.toggle(
-            "is-disabled",
-            currentSlide === 0
-        );
-
-        rightArrow.classList.toggle(
-            "is-disabled",
-            currentSlide === slides.length - 1
-        );
+        /*
+         * Arrow state
+         * Since slider is circular, both arrows remain active.
+         */
+        leftArrow.classList.remove("is-disabled");
+        rightArrow.classList.remove("is-disabled");
     }
 
-    /* =========================
+
+    /* ---------------------------------------------------------
+       NEXT SLIDE
+    --------------------------------------------------------- */
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+
+    /* ---------------------------------------------------------
+       PREVIOUS SLIDE
+    --------------------------------------------------------- */
+
+    function previousSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+
+    /* ---------------------------------------------------------
        ARROW CLICK
-       ========================= */
+    --------------------------------------------------------- */
 
     leftArrow.addEventListener("click", function () {
-        if (currentSlide > 0) {
-            showSlide(currentSlide - 1);
-        }
+
+        previousSlide();
+
+        restartAutoSlide();
     });
+
 
     rightArrow.addEventListener("click", function () {
-        if (currentSlide < slides.length - 1) {
-            showSlide(currentSlide + 1);
-        }
+
+        nextSlide();
+
+        restartAutoSlide();
     });
 
-    /* =========================
-       TOUCH / SWIPE
-       ========================= */
+
+    /* ---------------------------------------------------------
+       TOUCH SWIPE
+    --------------------------------------------------------- */
 
     let touchStartX = 0;
-    let touchStartY = 0;
     let touchEndX = 0;
-    let touchEndY = 0;
 
-    const swipeThreshold = 45;
-
-    slider.addEventListener(
+    mobileImage.addEventListener(
         "touchstart",
         function (event) {
 
-            if (!event.touches || !event.touches.length) {
-                return;
-            }
+            touchStartX =
+                event.changedTouches[0].screenX;
 
-            touchStartX = event.touches[0].clientX;
-            touchStartY = event.touches[0].clientY;
-
-            touchEndX = touchStartX;
-            touchEndY = touchStartY;
         },
         { passive: true }
     );
 
-    slider.addEventListener(
-        "touchmove",
+
+    mobileImage.addEventListener(
+        "touchend",
         function (event) {
 
-            if (!event.touches || !event.touches.length) {
-                return;
-            }
+            touchEndX =
+                event.changedTouches[0].screenX;
 
-            touchEndX = event.touches[0].clientX;
-            touchEndY = event.touches[0].clientY;
+            handleSwipe();
+
         },
         { passive: true }
     );
 
-    slider.addEventListener(
-        "touchend",
-        function () {
 
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
+    function handleSwipe() {
 
-            /* Ignore mostly vertical finger movement */
-            if (Math.abs(deltaX) <= Math.abs(deltaY)) {
-                return;
+        const swipeDistance =
+            touchStartX - touchEndX;
+
+        /*
+         * Minimum swipe distance
+         */
+        if (Math.abs(swipeDistance) < 50) {
+            return;
+        }
+
+        if (swipeDistance > 0) {
+
+            // Swipe left → next image
+            nextSlide();
+
+        } else {
+
+            // Swipe right → previous image
+            previousSlide();
+
+        }
+
+        restartAutoSlide();
+    }
+
+
+    /* ---------------------------------------------------------
+       AUTO SLIDE
+       Every 4 seconds
+    --------------------------------------------------------- */
+
+    let autoSlideTimer;
+
+    function startAutoSlide() {
+
+        clearInterval(autoSlideTimer);
+
+        autoSlideTimer = setInterval(function () {
+
+            /*
+             * Only auto-slide on mobile
+             */
+            if (window.innerWidth <= 600) {
+
+                nextSlide();
+
             }
 
-            /* Swipe LEFT = next image */
-            if (deltaX < -swipeThreshold) {
+        }, 2000);
+    }
 
-                if (currentSlide < slides.length - 1) {
-                    showSlide(currentSlide + 1);
-                }
 
-                return;
-            }
+    /* ---------------------------------------------------------
+       RESTART AUTO SLIDE
+       After user clicks/swipes
+    --------------------------------------------------------- */
 
-            /* Swipe RIGHT = previous image */
-            if (deltaX > swipeThreshold) {
+    function restartAutoSlide() {
 
-                if (currentSlide > 0) {
-                    showSlide(currentSlide - 1);
-                }
-            }
-        },
-        { passive: true }
-    );
+        clearInterval(autoSlideTimer);
 
-    /* Start on mobile image 1 */
+        startAutoSlide();
+    }
+
+
+    /* ---------------------------------------------------------
+       INITIAL SLIDE
+    --------------------------------------------------------- */
+
     showSlide(0);
+
+    startAutoSlide();
+
 });
