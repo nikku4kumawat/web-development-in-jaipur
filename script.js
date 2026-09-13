@@ -235,159 +235,140 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
 /* =========================================
    AGILE SOLUTIONS PORTFOLIO
 ========================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
+  const tabs = [...document.querySelectorAll(".portfolio-tab")];
+  const panels = [...document.querySelectorAll(".portfolio-panel")];
 
-    /* =====================================
-       PORTFOLIO TABS
-    ====================================== */
+  let active = 0;
+  let current = 0;
+  let timer = null;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTime = 0;
 
-    const tabs =
-        document.querySelectorAll(".portfolio-tab");
+  const isMobile = () => window.innerWidth <= 600;
 
-    const grids =
-        document.querySelectorAll(".portfolio-grid");
+  function getActiveRow() {
+    return panels[active].querySelector(".portfolio-row");
+  }
 
+  function getCardWidth() {
+    const row = getActiveRow();
+    const card = row.querySelector(".portfolio-card");
+    const gap = parseFloat(getComputedStyle(row).gap) || 0;
+    return card.getBoundingClientRect().width + gap;
+  }
 
-    tabs.forEach((tab) => {
+  function move(animate = true) {
+    if (!isMobile()) {
+      // Desktop/tablet must NEVER move horizontally.
+      panels.forEach(p => {
+        p.querySelector(".portfolio-row").style.transform = "translate3d(0,0,0)";
+        p.querySelector(".portfolio-row").style.transition = "none";
+      });
+      return;
+    }
 
-        tab.addEventListener("click", () => {
+    const row = getActiveRow();
+    row.style.transition = animate ? "transform .55s ease" : "none";
+    row.style.transform = `translate3d(-${current * getCardWidth()}px,0,0)`;
+  }
 
-            const category =
-                tab.dataset.category;
+  function selectCategory(index) {
+    active = index;
+    current = 0;
 
-
-            /* ---------------------------------
-               REMOVE ACTIVE FROM ALL TABS
-            ---------------------------------- */
-
-            tabs.forEach((item) => {
-
-                item.classList.remove("active");
-
-                item.setAttribute(
-                    "aria-selected",
-                    "false"
-                );
-
-            });
-
-
-            /* ---------------------------------
-               ACTIVE CLICKED TAB
-            ---------------------------------- */
-
-            tab.classList.add("active");
-
-            tab.setAttribute(
-                "aria-selected",
-                "true"
-            );
-
-
-            /* ---------------------------------
-               HIDE ALL PORTFOLIO GRIDS
-            ---------------------------------- */
-
-            grids.forEach((grid) => {
-
-                grid.classList.remove(
-                    "active-grid"
-                );
-
-            });
-
-
-            /* ---------------------------------
-               SHOW SELECTED PORTFOLIO
-            ---------------------------------- */
-
-            const selectedGrid =
-                document.getElementById(category);
-
-
-            if (selectedGrid) {
-
-                selectedGrid.classList.add(
-                    "active-grid"
-                );
-
-            }
-
-        });
-
+    tabs.forEach((tab, i) => {
+      const selected = i === active;
+      tab.classList.toggle("active", selected);
+      tab.setAttribute("aria-selected", String(selected));
     });
 
-
-
-    /* =====================================
-       WHATSAPP CONFIGURATION
-    ====================================== */
-
-    const whatsappNumber =
-        "918005677079";
-
-
-    const whatsappMessage =
-        "Hello Agile Solutions, I want to discuss a web or software development project.";
-
-
-    const encodedMessage =
-        encodeURIComponent(
-            whatsappMessage
-        );
-
-
-    const whatsappURL =
-        `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-
-
-    /* =====================================
-       MAKE EVERY PORTFOLIO IMAGE
-       CLICKABLE FOR WHATSAPP
-    ====================================== */
-
-    const portfolioItems =
-        document.querySelectorAll(
-            ".portfolio-item"
-        );
-
-
-    portfolioItems.forEach((item) => {
-
-        /*
-           Prevent # navigation
-        */
-
-        item.setAttribute(
-            "href",
-            whatsappURL
-        );
-
-
-        /*
-           Open WhatsApp in new tab
-        */
-
-        item.setAttribute(
-            "target",
-            "_blank"
-        );
-
-
-        item.setAttribute(
-            "rel",
-            "noopener noreferrer"
-        );
-
+    panels.forEach((panel, i) => {
+      panel.classList.toggle("active", i === active);
     });
 
+    // Category changes IN PLACE. No page scroll and no horizontal tab jump.
+    move(false);
+    startAuto();
+  }
+
+  function next() {
+    if (!isMobile()) return;
+
+    // Four images: 0 -> 1 -> 2 -> 3 -> 0.
+    // Because all moves are equal-width, the carousel never jumps between
+    // different category positions; it simply continues from image 4 to 1.
+    current = (current + 1) % 4;
+    move(true);
+  }
+
+  function previous() {
+    if (!isMobile()) return;
+    current = (current - 1 + 4) % 4;
+    move(true);
+  }
+
+  function stopAuto() {
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function startAuto() {
+    stopAuto();
+    if (!isMobile()) return;
+
+    // Exactly every 3 seconds on mobile.
+    timer = setInterval(next, 3000);
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => selectCategory(index));
+  });
+
+  panels.forEach(panel => {
+    panel.addEventListener("touchstart", e => {
+      if (!isMobile()) return;
+      const t = e.changedTouches[0];
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      touchStartTime = Date.now();
+      stopAuto();
+    }, { passive: true });
+
+    panel.addEventListener("touchend", e => {
+      if (!isMobile()) return;
+
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      const duration = Date.now() - touchStartTime;
+
+      if (duration < 800 && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) next();
+        else previous();
+      }
+
+      startAuto();
+    }, { passive: true });
+  });
+
+  window.addEventListener("resize", () => {
+    current = 0;
+    move(false);
+    startAuto();
+  });
+
+  selectCategory(0);
 });
+
+
+
 
 
 

@@ -1255,862 +1255,194 @@ body {
 
 
 
+/* =========================================================
+   AGILE SOLUTIONS - WEB & SOFTWARE PORTFOLIO
+   Desktop: NO horizontal scroll
+   Tablet: 2 images, NO horizontal scroll
+   Mobile: 1 image + horizontal auto/touch carousel
+   ========================================================= */
 
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#fff;
+  color:#101828;
+}
+.agile-portfolio{
+  width:100%;
+  padding:50px 20px;
+  background:#fff;
+  overflow:hidden;
+}
+.portfolio-container{
+  width:min(1280px,100%);
+  margin:0 auto;
+}
+.portfolio-heading{
+  text-align:center;
+  max-width:1050px;
+  margin:0 auto 38px;
+}
+.portfolio-heading h2{
+  margin:0 0 18px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:35px;
+  line-height:1.15;
+  font-weight:700;
+  color:#0b1f4b;
+}
+.portfolio-heading h2 span{color:#4169e1}
+.portfolio-heading p{
+  margin:0 auto;
+  max-width:1000px;
+  color:#667085;
+  font-size:17px;
+  line-height:1.7;
+}
+.portfolio-tabs{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin:0 auto 36px;
+}
+.portfolio-tab{
+  appearance:none;
+  border:0;
+  min-height:50px;
+  padding:0 24px;
+  border-radius:8px;
+  background:transparent;
+  color:#1d2939;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:.25s ease;
+}
+.portfolio-tab:hover,
+.portfolio-tab.active{
+  background:#4169e1;
+  color:#fff;
+  box-shadow:0 10px 25px rgba(65,105,225,.20);
+}
+.portfolio-tab:focus-visible{
+  outline:3px solid rgba(65,105,225,.30);
+  outline-offset:3px;
+}
 
+/* IMPORTANT: desktop/tablet are static. No horizontal scrolling. */
+.portfolio-view{
+  width:100%;
+  overflow:hidden;
+}
+.portfolio-panel{
+  display:none;
+  width:100%;
+}
+.portfolio-panel.active{display:block}
+.portfolio-row{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:18px;
+}
+.portfolio-card{
+  display:block;
+  width:100%;
+  aspect-ratio:1/1;
+  overflow:hidden;
+  border-radius:6px;
+  background:#f3f5f8;
+  text-decoration:none;
+  box-shadow:0 7px 22px rgba(16,24,40,.08);
+  -webkit-tap-highlight-color:transparent;
+}
+.portfolio-card img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .35s ease;
+}
+.portfolio-card:hover img{transform:scale(1.025)}
 
+/* TABLET: 2 posters visible. Still NO horizontal scroll. */
+@media (max-width:991px){
+  .agile-portfolio{padding:58px 18px}
+  .portfolio-heading{margin-bottom:30px}
+  .portfolio-heading p{font-size:16px}
+  .portfolio-tabs{
+    justify-content:center;
+    gap:8px;
+    margin-bottom:28px;
+  }
+  .portfolio-tab{
+    min-height:46px;
+    padding:0 17px;
+    font-size:14px;
+  }
+  .portfolio-row{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px;
+  }
+}
 
-
-/* =========================================
-   AGILE SOLUTIONS PORTFOLIO   START
-========================================= */
-
-:root {
-    --agile-blue: #4267e8;
-    --agile-blue-dark: #3157d5;
-
-    --text-dark: #171717;
-    --text-light: #666;
-
-    --border: #e5e5e5;
-    --white: #ffffff;
-
-    --section-bg: #f8f9fc;
+/* MOBILE: EXACTLY 1 poster visible; horizontal only.
+   Four posters form a continuous loop. */
+@media (max-width:600px){
+  .agile-portfolio{padding:46px 14px}
+  .portfolio-heading{margin-bottom:25px}
+  .portfolio-heading h2{
+    font-size:32px;
+    line-height:1.2;
+    margin-bottom:14px;
+  }
+  .portfolio-heading p{
+    font-size:15px;
+    line-height:1.65;
+  }
+  .portfolio-tabs{
+    justify-content:flex-start;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+    gap:7px;
+    padding:3px 2px 10px;
+    margin-bottom:22px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .portfolio-tabs::-webkit-scrollbar{display:none}
+  .portfolio-tab{
+    flex:0 0 auto;
+    min-height:44px;
+    padding:0 16px;
+    font-size:14px;
+  }
+  .portfolio-panel{overflow:hidden}
+  .portfolio-row{
+    display:flex;
+    flex-wrap:nowrap;
+    gap:14px;
+    width:max-content;
+    transform:translate3d(0,0,0);
+    will-change:transform;
+  }
+  .portfolio-card{
+    flex:0 0 calc(100vw - 28px);
+    width:calc(100vw - 28px);
+    max-width:none;
+    aspect-ratio:1/1;
+  }
+  .portfolio-card:hover img{transform:none}
 }
 
 
-/* =========================================
-   RESET
-========================================= */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-html {
-    scroll-behavior: smooth;
-}
 
-body {
-    font-family: "DM Sans", sans-serif;
-    color: var(--text-dark);
-    background: #fff;
-}
 
-button,
-a {
-    -webkit-tap-highlight-color: transparent;
-}
-
-a {
-    text-decoration: none;
-}
-
-
-/* =========================================
-   PORTFOLIO SECTION
-========================================= */
-
-.portfolio-section {
-    width: 100%;
-    padding: 40px 0 30px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #bcc3d6 0%,
-            #e6d3d3 100%
-        );
-
-    overflow: hidden;
-}
-
-
-/* =========================================
-   CONTAINER
-========================================= */
-
-.portfolio-container {
-    width: min(1500px, calc(100% - 70px));
-    margin: 0 auto;
-}
-
-
-/* =========================================
-   HEADING
-========================================= */
-
-.portfolio-heading {
-    text-align: center;
-
-    max-width: 1050px;
-
-    margin: 0 auto 45px;
-}
-
-.portfolio-small-title {
-    display: inline-block;
-
-    margin-bottom: 14px;
-
-    font-size: 13px;
-    font-weight: 700;
-
-    letter-spacing: 3px;
-    text-transform: uppercase;
-
-    color: var(--agile-blue);
-}
-
-.portfolio-heading h2 {
-    margin-bottom: 20px;
-
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(34px, 3.35vw, 48px);
-    line-height: 1.07;
-    font-weight: 700;
-    color: #07143b;
-}
-
-.portfolio-heading h2 span {
-    color: var(--agile-blue);
-}
-
-.portfolio-heading p {
-    max-width: 950px;
-
-    margin: 0 auto;
-
-    color: var(--text-light);
-
-    font-size: 17px;
-    line-height: 1.75;
-}
-
-
-/* =========================================
-   TABS
-========================================= */
-
-.portfolio-tabs {
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    gap: 8px;
-
-    margin-bottom: 40px;
-}
-
-
-.portfolio-tab {
-    border: 0;
-
-    background: transparent;
-
-    padding: 14px 22px;
-
-    border-radius: 7px;
-
-    color: #4c4c4c;
-
-    font-family: "DM Sans", sans-serif;
-
-    font-size: 16px;
-    font-weight: 500;
-
-    cursor: pointer;
-
-    transition:
-        background 0.3s ease,
-        color 0.3s ease,
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-}
-
-
-/* =========================================
-   HOVER BUTTON
-========================================= */
-
-.portfolio-tab:hover {
-    color: #fff;
-
-    background: var(--agile-blue);
-
-    box-shadow:
-        0 12px 28px rgba(66, 103, 232, 0.20);
-
-    transform: translateY(-1px);
-}
-
-
-/* =========================================
-   ACTIVE BUTTON
-========================================= */
-
-.portfolio-tab.active {
-    color: #fff;
-
-    background: var(--agile-blue);
-
-    box-shadow:
-        0 12px 28px rgba(66, 103, 232, 0.20);
-
-    transform: translateY(-1px);
-}
-
-
-/* Active button hover same rahe */
-
-.portfolio-tab.active:hover {
-    color: #fff;
-
-    background: var(--agile-blue);
-
-    box-shadow:
-        0 12px 28px rgba(66, 103, 232, 0.20);
-
-    transform: translateY(-1px);
-}
-
-/* =========================================
-   PORTFOLIO WRAPPER
-========================================= */
-
-.portfolio-wrapper {
-    width: 100%;
-
-    padding: 13px;
-
-    background: #fff;
-
-    border: 1px solid #f0f0f0;
-
-    box-shadow:
-        0 15px 45px rgba(0, 0, 0, 0.06);
-}
-
-
-/* =========================================
-   PORTFOLIO GRID
-========================================= */
-
-.portfolio-grid {
-
-    display: none;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap: 13px;
-
-    /*
-       IMPORTANT
-
-       This ratio controls the total height
-       of the complete 4-column portfolio.
-
-       Every column gets exactly the same
-       height.
-    */
-
-    aspect-ratio: 3.35 / 1;
-
-    animation: portfolioFade 0.45s ease;
-}
-
-.portfolio-grid.active-grid {
-    display: grid;
-}
-
-
-/* =========================================
-   COLUMN
-========================================= */
-
-.portfolio-column {
-
-    min-width: 0;
-    min-height: 0;
-
-    display: grid;
-
-    grid-template-rows: 1fr;
-
-    gap: 13px;
-}
-
-
-/*
-   TWO IMAGE COLUMN
-
-   Both images together occupy exactly
-   the same height as a single image
-   in other columns.
-*/
-
-.portfolio-column.double-column {
-
-    grid-template-rows:
-        minmax(0, 1fr)
-        minmax(0, 1fr);
-}
-
-
-/* =========================================
-   IMAGE CARD
-========================================= */
-
-.portfolio-item {
-
-    position: relative;
-
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    min-height: 0;
-
-    overflow: hidden;
-
-    background: #f1f3f7;
-
-    cursor: pointer;
-
-    border-radius: 0;
-}
-
-
-/* =========================================
-   IMAGE
-========================================= */
-
-.portfolio-item img {
-
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    /*
-       cover ensures image fills complete
-       card without empty space.
-    */
-
-    object-fit: cover;
-
-    /*
-       Center crop.
-
-       You can change to:
-       top
-       center
-       bottom
-       if a particular image needs it.
-    */
-
-    object-position: center;
-
-    transition:
-        transform 0.55s cubic-bezier(.2, .7, .2, 1),
-        filter 0.4s ease;
-}
-
-
-/* =========================================
-   HOVER EFFECT
-========================================= */
-
-.portfolio-item:hover img {
-
-    transform: scale(1.035);
-
-    filter: brightness(0.94);
-}
-
-
-/* =========================================
-   BLUE BORDER
-========================================= */
-
-.portfolio-item::after {
-
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-   
-
-    pointer-events: none;
-
-    transition:
-        border-width 0.25s ease;
-}
-
-.portfolio-item:hover::after {
-    border-width: 3px;
-}
-
-
-/* =========================================
-   CLICK FEEDBACK
-========================================= */
-
-.portfolio-item:active img {
-    transform: scale(1);
-}
-
-
-/* =========================================
-   ANIMATION
-========================================= */
-
-@keyframes portfolioFade {
-
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-}
-
-
-/* =========================================
-   TABLET
-========================================= */
-/* =========================================
-   PORTFOLIO RESPONSIVE
-   Desktop layout same rahega
-   Tablet + Mobile = 4 column structure
-========================================= */
-
-
-/* =========================================
-   TABLET
-   768px - 1100px
-========================================= */
-
-@media (max-width: 1100px) {
-
-    .portfolio-section {
-        padding: 60px 0 70px;
-    }
-
-    .portfolio-container {
-        width: calc(100% - 40px);
-        max-width: 1100px;
-        margin: 0 auto;
-    }
-
-    .portfolio-heading {
-        margin-bottom: 35px;
-    }
-
-    .portfolio-heading h2 {
-        font-size: clamp(36px, 5vw, 48px);
-    }
-
-    .portfolio-heading p {
-        font-size: 15px;
-        line-height: 1.65;
-    }
-
-    /* Tabs */
-    .portfolio-tabs {
-        gap: 7px;
-        margin-bottom: 30px;
-    }
-
-    .portfolio-tab {
-        padding: 13px 19px;
-        font-size: 14px;
-    }
-
-    /* Wrapper */
-    .portfolio-wrapper {
-        padding: 9px;
-    }
-
-    /* =====================================
-       IMPORTANT:
-       Keep 4 columns like desktop
-    ====================================== */
-
-    .portfolio-grid,
-    .portfolio-grid.active-grid {
-
-        grid-template-columns:
-            repeat(4, minmax(0, 1fr));
-
-        gap: 9px;
-
-        /*
-           Keep horizontal desktop structure.
-           Height automatically becomes smaller
-           according to screen width.
-        */
-
-        aspect-ratio: 3.35 / 1;
-    }
-
-    .portfolio-column {
-        min-width: 0;
-        min-height: 0;
-
-        display: grid;
-
-        grid-template-rows: 1fr;
-
-        gap: 9px;
-    }
-
-    .portfolio-column.double-column {
-        grid-template-rows:
-            minmax(0, 1fr)
-            minmax(0, 1fr);
-    }
-
-    .portfolio-item {
-        width: 100%;
-        height: 100%;
-        min-height: 0;
-
-        overflow: hidden;
-    }
-
-    .portfolio-item img {
-        width: 100%;
-        height: 100%;
-
-        object-fit: cover;
-        object-position: center;
-    }
-}
-
-
-/* =========================================
-   MOBILE
-   481px - 767px
-
-   4 columns SAME as desktop
-========================================= */
-
-@media (max-width: 767px) {
-
-    .portfolio-section {
-        padding: 45px 0 55px;
-    }
-
-    .portfolio-container {
-        width: calc(100% - 20px);
-        margin: 0 auto;
-    }
-
-
-    /* =====================================
-       HEADING
-    ====================================== */
-
-    .portfolio-heading {
-        margin-bottom: 25px;
-    }
-
-    .portfolio-small-title {
-        font-size: 10px;
-        letter-spacing: 1.8px;
-        margin-bottom: 9px;
-    }
-
-    .portfolio-heading h2 {
-        font-size: clamp(28px, 7vw, 36px);
-        line-height: 1.12;
-        margin-bottom: 12px;
-    }
-
-    .portfolio-heading p {
-        font-size: 13px;
-        line-height: 1.6;
-        max-width: 100%;
-    }
-
-
-    /* =====================================
-       TABS
-    ====================================== */
-
-    .portfolio-tabs {
-
-        justify-content: flex-start;
-
-        overflow-x: auto;
-
-        gap: 5px;
-
-        margin:
-            0 -10px 22px;
-
-        padding:
-            3px 10px 7px;
-
-        scrollbar-width: none;
-    }
-
-    .portfolio-tabs::-webkit-scrollbar {
-        display: none;
-    }
-
-    .portfolio-tab {
-
-        flex: 0 0 auto;
-
-        padding:
-            9px 13px;
-
-        font-size: 11px;
-
-        white-space: nowrap;
-
-        border-radius: 5px;
-    }
-
-
-    /* =====================================
-       WRAPPER
-    ====================================== */
-
-    .portfolio-wrapper {
-        padding: 5px;
-    }
-
-
-    /* =====================================
-       IMPORTANT MOBILE GRID
-
-       DO NOT CHANGE TO 1fr
-
-       Keep SAME 4 COLUMN layout
-       as desktop.
-    ====================================== */
-
-    .portfolio-grid,
-    .portfolio-grid.active-grid {
-
-        display: none;
-
-        grid-template-columns:
-            repeat(4, minmax(0, 1fr));
-
-        gap: 5px;
-
-        /*
-           Smaller overall height on mobile
-           but SAME horizontal structure.
-        */
-
-        aspect-ratio: 3.35 / 1;
-    }
-
-    .portfolio-grid.active-grid {
-        display: grid;
-    }
-
-
-    /* =====================================
-       COLUMNS
-    ====================================== */
-
-    .portfolio-column {
-
-        min-width: 0;
-        min-height: 0;
-
-        display: grid;
-
-        grid-template-rows: 1fr;
-
-        gap: 5px;
-    }
-
-
-    /* Two-image columns stay two images */
-
-    .portfolio-column.double-column {
-
-        grid-template-rows:
-            minmax(0, 1fr)
-            minmax(0, 1fr);
-
-        gap: 5px;
-    }
-
-
-    /* =====================================
-       IMAGE CARD
-    ====================================== */
-
-    .portfolio-item {
-
-        width: 100%;
-        height: 100%;
-
-        min-height: 0;
-
-        aspect-ratio: auto;
-
-        overflow: hidden;
-    }
-
-
-    /* =====================================
-       IMAGE
-    ====================================== */
-
-    .portfolio-item img {
-
-        display: block;
-
-        width: 100%;
-        height: 100%;
-
-        object-fit: cover;
-        object-position: center;
-    }
-
-
-    /* =====================================
-       TOUCH DEVICE
-       Remove desktop hover effect
-    ====================================== */
-
-    .portfolio-item:hover img {
-        transform: none;
-        filter: none;
-    }
-
-    .portfolio-item:hover::after {
-        border-width: 0;
-    }
-}
-
-
-/* =========================================
-   SMALL MOBILE
-   430px AND BELOW
-========================================= */
-
-@media (max-width: 430px) {
-
-    .portfolio-section {
-        padding: 38px 0 48px;
-    }
-
-    .portfolio-container {
-        width: calc(100% - 14px);
-    }
-
-
-    /* Heading */
-
-    .portfolio-heading {
-        margin-bottom: 21px;
-    }
-
-    .portfolio-heading h2 {
-        font-size: 27px;
-        line-height: 1.12;
-    }
-
-    .portfolio-heading p {
-        font-size: 12px;
-        line-height: 1.55;
-    }
-
-
-    /* Tabs */
-
-    .portfolio-tabs {
-
-        gap: 4px;
-
-        margin:
-            0 -7px 18px;
-
-        padding:
-            2px 7px 6px;
-    }
-
-    .portfolio-tab {
-
-        padding:
-            8px 10px;
-
-        font-size: 10px;
-
-        border-radius: 5px;
-    }
-
-
-    /* =====================================
-       SAME 4 COLUMN LAYOUT
-    ====================================== */
-
-    .portfolio-wrapper {
-        padding: 4px;
-    }
-
-    .portfolio-grid,
-    .portfolio-grid.active-grid {
-
-        grid-template-columns:
-            repeat(4, minmax(0, 1fr));
-
-        gap: 4px;
-
-        aspect-ratio: 3.35 / 1;
-    }
-
-
-    /* Columns */
-
-    .portfolio-column {
-        gap: 4px;
-    }
-
-    .portfolio-column.double-column {
-        grid-template-rows:
-            minmax(0, 1fr)
-            minmax(0, 1fr);
-
-        gap: 4px;
-    }
-
-
-    /* Images */
-
-    .portfolio-item {
-        width: 100%;
-        height: 100%;
-    }
-
-    .portfolio-item img {
-        width: 100%;
-        height: 100%;
-
-        object-fit: cover;
-        object-position: center;
-    }
-}
 
 
 
