@@ -194,179 +194,216 @@ document.addEventListener("DOMContentLoaded", function () {
 /* =========================================================
    SERVICE CARD -> WHATSAPP
    ========================================================= */
+/* =========================================================
+   SERVICE CARD -> PHONE CALL
+   ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
-    const serviceCards = document.querySelectorAll(".agile-service-card");
 
-    const whatsappNumber = "918005677079";
+    const serviceCards =
+        document.querySelectorAll(".agile-service-card");
 
-    const whatsappMessage =
-        "Hello Agile Solutions, I want to discuss a web or software development project.";
+    const phoneNumber = "+918005677079";
 
-    const whatsappURL =
-        "https://wa.me/" +
-        whatsappNumber +
-        "?text=" +
-        encodeURIComponent(whatsappMessage);
-
-    function openWhatsApp() {
-        window.open(whatsappURL, "_blank", "noopener,noreferrer");
+    function makePhoneCall() {
+        window.location.href = "tel:" + phoneNumber;
     }
 
     serviceCards.forEach(function (card) {
+
+        /* Card click */
         card.addEventListener("click", function (event) {
-            // Do not trigger WhatsApp if an actual link/button
+
+            // Do not trigger call if an actual link/button
             // inside the card is clicked.
             if (event.target.closest("a, button")) {
                 return;
             }
 
-            openWhatsApp();
+            makePhoneCall();
         });
 
+        /* Keyboard accessibility */
         card.addEventListener("keydown", function (event) {
-            if (event.key === "Enter" || event.key === " ") {
+
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
                 event.preventDefault();
-                openWhatsApp();
+                makePhoneCall();
             }
+
         });
+
     });
+
 });
 
 
-
-/* =========================================
+/* =========================================================
    AGILE SOLUTIONS PORTFOLIO
-========================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  const tabs = [...document.querySelectorAll(".portfolio-tab")];
-  const panels = [...document.querySelectorAll(".portfolio-panel")];
+========================================================= */
 
-  let active = 0;
-  let current = 0;
-  let timer = null;
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchStartTime = 0;
+/* =========================================================
+   AGILE SOLUTIONS - PORTFOLIO SECTION JS
 
-  const isMobile = () => window.innerWidth <= 600;
+   FIX ONLY:
+   - Laptop/Desktop stays static
+   - Tablet + Mobile keep ORIGINAL 5s scroll speed
+   - Clicking ANY card pauses the marquee
+   - Clicking again resumes the marquee
+   - Image hover scroll stays the same
+========================================================= */
 
-  function getActiveRow() {
-    return panels[active].querySelector(".portfolio-row");
-  }
+document.addEventListener("DOMContentLoaded", function () {
 
-  function getCardWidth() {
-    const row = getActiveRow();
-    const card = row.querySelector(".portfolio-card");
-    const gap = parseFloat(getComputedStyle(row).gap) || 0;
-    return card.getBoundingClientRect().width + gap;
-  }
+  const track = document.querySelector(".portfolio-track");
 
-  function move(animate = true) {
-    if (!isMobile()) {
-      // Desktop/tablet must NEVER move horizontally.
-      panels.forEach(p => {
-        p.querySelector(".portfolio-row").style.transform = "translate3d(0,0,0)";
-        p.querySelector(".portfolio-row").style.transition = "none";
-      });
-      return;
-    }
+  if (!track) return;
 
-    const row = getActiveRow();
-    row.style.transition = animate ? "transform .55s ease" : "none";
-    row.style.transform = `translate3d(-${current * getCardWidth()}px,0,0)`;
-  }
 
-  function selectCategory(index) {
-    active = index;
-    current = 0;
+  /* =======================================================
+     PORTFOLIO MARQUEE
+  ======================================================= */
 
-    tabs.forEach((tab, i) => {
-      const selected = i === active;
-      tab.classList.toggle("active", selected);
-      tab.setAttribute("aria-selected", String(selected));
-    });
+  function updatePortfolioAnimation() {
 
-    panels.forEach((panel, i) => {
-      panel.classList.toggle("active", i === active);
-    });
+    const width = window.innerWidth;
 
-    // Category changes IN PLACE. No page scroll and no horizontal tab jump.
-    move(false);
-    startAuto();
-  }
+    if (width > 1024) {
 
-  function next() {
-    if (!isMobile()) return;
+      // Laptop/Desktop: exactly six cards, no movement.
+      track.style.animation = "none";
+      track.classList.remove("portfolio-is-paused");
 
-    // Four images: 0 -> 1 -> 2 -> 3 -> 0.
-    // Because all moves are equal-width, the carousel never jumps between
-    // different category positions; it simply continues from image 4 to 1.
-    current = (current + 1) % 4;
-    move(true);
-  }
+    } else {
 
-  function previous() {
-    if (!isMobile()) return;
-    current = (current - 1 + 4) % 4;
-    move(true);
-  }
-
-  function stopAuto() {
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
+      // Tablet + Mobile: ORIGINAL 5 second speed.
+      track.style.animation =
+        "portfolioInfiniteScroll 5s linear infinite";
     }
   }
 
-  function startAuto() {
-    stopAuto();
-    if (!isMobile()) return;
 
-    // Exactly every 3 seconds on mobile.
-    timer = setInterval(next, 3000);
-  }
+  /* =======================================================
+     CALCULATE FULL IMAGE SCROLL DISTANCE
+  ======================================================= */
 
-  tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => selectCategory(index));
-  });
+  function setupPortfolioImageScroll() {
 
-  panels.forEach(panel => {
-    panel.addEventListener("touchstart", e => {
-      if (!isMobile()) return;
-      const t = e.changedTouches[0];
-      touchStartX = t.clientX;
-      touchStartY = t.clientY;
-      touchStartTime = Date.now();
-      stopAuto();
-    }, { passive: true });
+    const windows =
+      document.querySelectorAll(".portfolio-image-window");
 
-    panel.addEventListener("touchend", e => {
-      if (!isMobile()) return;
+    windows.forEach(function (imageWindow) {
 
-      const t = e.changedTouches[0];
-      const dx = t.clientX - touchStartX;
-      const dy = t.clientY - touchStartY;
-      const duration = Date.now() - touchStartTime;
+      const image =
+        imageWindow.querySelector("img");
 
-      if (duration < 800 && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
-        if (dx < 0) next();
-        else previous();
+      if (!image) return;
+
+
+      function calculateDistance() {
+
+        const imageHeight =
+          image.getBoundingClientRect().height;
+
+        const windowHeight =
+          imageWindow.clientHeight;
+
+        const distance =
+          Math.max(
+            0,
+            imageHeight - windowHeight
+          );
+
+        image.style.setProperty(
+          "--portfolio-scroll-distance",
+          "-" + distance + "px"
+        );
       }
 
-      startAuto();
-    }, { passive: true });
+
+      if (image.complete) {
+
+        calculateDistance();
+
+      } else {
+
+        image.addEventListener(
+          "load",
+          calculateDistance,
+          { once: true }
+        );
+      }
+    });
+  }
+
+
+  /* =======================================================
+     CARD CLICK = PAUSE / RESUME
+     TABLET + MOBILE ONLY
+  ======================================================= */
+
+  function setupPortfolioCardClickPause() {
+
+    const cards =
+      document.querySelectorAll(".portfolio-card");
+
+    cards.forEach(function (card) {
+
+      card.addEventListener("click", function () {
+
+        if (window.innerWidth <= 1024) {
+
+          track.classList.toggle(
+            "portfolio-is-paused"
+          );
+        }
+      });
+    });
+  }
+
+
+  /* =======================================================
+     INITIALIZE
+  ======================================================= */
+
+  updatePortfolioAnimation();
+  setupPortfolioImageScroll();
+  setupPortfolioCardClickPause();
+
+
+  /* =======================================================
+     RESIZE
+  ======================================================= */
+
+  let resizeTimer;
+
+  window.addEventListener("resize", function () {
+
+    clearTimeout(resizeTimer);
+
+    resizeTimer = setTimeout(function () {
+
+      updatePortfolioAnimation();
+      setupPortfolioImageScroll();
+
+    }, 150);
   });
 
-  window.addEventListener("resize", () => {
-    current = 0;
-    move(false);
-    startAuto();
+
+  /* =======================================================
+     IMAGE LOAD
+  ======================================================= */
+
+  window.addEventListener("load", function () {
+
+    setupPortfolioImageScroll();
+
   });
 
-  selectCategory(0);
 });
-
 
 
 
@@ -579,7 +616,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
 /* =========================================
    AGILE REVIEWS CAROUSEL
    - Desktop/tablet: 4 cards visible
@@ -588,8 +624,11 @@ document.addEventListener("DOMContentLoaded", function () {
    - Previous/next arrows
    - Touch/swipe support
    - Infinite loop
+   - Review cards -> Phone Call
    ========================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
+
   const slider = document.getElementById("reviewsSlider");
   const track = document.getElementById("reviewsTrack");
   const prevBtn = document.querySelector(".review-prev");
@@ -597,42 +636,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!slider || !track || !prevBtn || !nextBtn) return;
 
+
+  /* =======================================================
+     ORIGINAL REVIEW CARDS
+  ======================================================= */
+
   const originalCards = Array.from(track.children);
   const realCount = originalCards.length;
 
-  // Clone reviews for a smooth infinite carousel.
+
+  /* =======================================================
+     CLONE REVIEWS FOR INFINITE LOOP
+  ======================================================= */
+
   originalCards.forEach((card) => {
     track.appendChild(card.cloneNode(true));
   });
 
   const allCards = Array.from(track.children);
 
-  const whatsappNumber = "918005677079";
-  const whatsappMessage =
-    "Hello Agile Solutions, I want to discuss a web or software development project.";
+
+  /* =======================================================
+     PHONE NUMBER
+  ======================================================= */
+
+  const phoneNumber = "+918005677079";
+
+
+  /* =======================================================
+     VARIABLES
+  ======================================================= */
 
   let currentIndex = 0;
   let autoTimer = null;
   let isAnimating = false;
+
   let startX = 0;
   let currentX = 0;
   let isTouching = false;
+
+
+  /* =======================================================
+     MOBILE CHECK
+  ======================================================= */
 
   function isMobile() {
     return window.innerWidth <= 767;
   }
 
+
+  /* =======================================================
+     CARD STEP
+  ======================================================= */
+
   function getStep() {
+
     const card = allCards[0];
+
     if (!card) return 0;
 
     const styles = window.getComputedStyle(track);
-    const gap = parseFloat(styles.columnGap || styles.gap || 0);
 
-    return card.getBoundingClientRect().width + gap;
+    const gap =
+      parseFloat(
+        styles.columnGap ||
+        styles.gap ||
+        0
+      );
+
+    return (
+      card.getBoundingClientRect().width +
+      gap
+    );
   }
 
+
+  /* =======================================================
+     APPLY CAROUSEL TRANSFORM
+  ======================================================= */
+
   function applyTransform(animate = true) {
+
     track.style.transition = animate
       ? "transform 600ms cubic-bezier(.22, .61, .36, 1)"
       : "none";
@@ -641,154 +725,436 @@ document.addEventListener("DOMContentLoaded", () => {
       `translate3d(-${currentIndex * getStep()}px, 0, 0)`;
   }
 
+
+  /* =======================================================
+     GO TO SLIDE
+  ======================================================= */
+
   function goTo(index) {
-    if (!isMobile() || isAnimating) return;
 
-    currentIndex = index;
-    isAnimating = true;
-    applyTransform(true);
-
-    window.setTimeout(() => {
-      if (currentIndex >= realCount) {
-        currentIndex = 0;
-        applyTransform(false);
-      }
-
-      if (currentIndex < 0) {
-        currentIndex = realCount - 1;
-        applyTransform(false);
-      }
-
-      isAnimating = false;
-    }, 630);
-  }
-
-  function next() {
-    goTo(currentIndex + 1);
-  }
-
-  function previous() {
-    if (!isMobile()) return;
-
-    if (currentIndex === 0) {
-      currentIndex = realCount;
-      applyTransform(false);
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          goTo(realCount - 1);
-        });
-      });
+    if (!isMobile() || isAnimating) {
       return;
     }
 
-    goTo(currentIndex - 1);
+    currentIndex = index;
+
+    isAnimating = true;
+
+    applyTransform(true);
+
+
+    window.setTimeout(() => {
+
+      /* -----------------------------------------------
+         Infinite loop - forward
+      ----------------------------------------------- */
+
+      if (currentIndex >= realCount) {
+
+        currentIndex = 0;
+
+        applyTransform(false);
+      }
+
+
+      /* -----------------------------------------------
+         Infinite loop - backward
+      ----------------------------------------------- */
+
+      if (currentIndex < 0) {
+
+        currentIndex = realCount - 1;
+
+        applyTransform(false);
+      }
+
+
+      isAnimating = false;
+
+    }, 630);
   }
+
+
+  /* =======================================================
+     NEXT
+  ======================================================= */
+
+  function next() {
+
+    goTo(currentIndex + 1);
+
+  }
+
+
+  /* =======================================================
+     PREVIOUS
+  ======================================================= */
+
+  function previous() {
+
+    if (!isMobile()) {
+      return;
+    }
+
+
+    /* -----------------------------------------------
+       Infinite backward movement
+    ----------------------------------------------- */
+
+    if (currentIndex === 0) {
+
+      currentIndex = realCount;
+
+      applyTransform(false);
+
+
+      requestAnimationFrame(() => {
+
+        requestAnimationFrame(() => {
+
+          goTo(realCount - 1);
+
+        });
+
+      });
+
+      return;
+    }
+
+
+    goTo(currentIndex - 1);
+
+  }
+
+
+  /* =======================================================
+     AUTO SLIDE START
+  ======================================================= */
 
   function startAutoSlide() {
+
     stopAutoSlide();
 
-    // Auto-slide is mobile-only.
+
+    /* Auto slide only on mobile */
+
     if (isMobile()) {
-      autoTimer = setInterval(next, 4000);
+
+      autoTimer = setInterval(() => {
+
+        next();
+
+      }, 4000);
+
     }
+
   }
+
+
+  /* =======================================================
+     AUTO SLIDE STOP
+  ======================================================= */
 
   function stopAutoSlide() {
+
     if (autoTimer) {
+
       clearInterval(autoTimer);
+
       autoTimer = null;
+
     }
+
   }
 
-  function openWhatsApp() {
-    const url =
-      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
-    window.open(url, "_blank", "noopener,noreferrer");
+  /* =======================================================
+     REVIEW CARD -> PHONE CALL
+  ======================================================= */
+
+  function makePhoneCall() {
+
+    window.location.href =
+      `tel:${phoneNumber}`;
+
   }
 
-  // Every original + cloned review card opens WhatsApp.
+
+  /* =======================================================
+     EVERY REVIEW CARD -> PHONE CALL
+  ======================================================= */
+
   allCards.forEach((card) => {
+
+
+    /* -----------------------------------------------
+       Mouse / Touch Click
+    ----------------------------------------------- */
+
     card.addEventListener("click", (event) => {
-      if (event.target.closest("button, a")) return;
-      openWhatsApp();
+
+      /*
+        If an actual button or link exists inside
+        the card, don't trigger phone call.
+      */
+
+      if (event.target.closest("button, a")) {
+        return;
+      }
+
+
+      makePhoneCall();
+
     });
+
+
+    /* -----------------------------------------------
+       Keyboard Accessibility
+    ----------------------------------------------- */
 
     card.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
+
+      if (
+        event.key === "Enter" ||
+        event.key === " "
+      ) {
+
         event.preventDefault();
-        openWhatsApp();
+
+        makePhoneCall();
+
       }
+
     });
+
   });
 
-  // Arrows only perform carousel movement on mobile.
+
+  /* =======================================================
+     NEXT ARROW
+  ======================================================= */
+
   nextBtn.addEventListener("click", () => {
+
     next();
+
     startAutoSlide();
+
   });
+
+
+  /* =======================================================
+     PREVIOUS ARROW
+  ======================================================= */
 
   prevBtn.addEventListener("click", () => {
+
     previous();
+
     startAutoSlide();
+
   });
 
-  // Touch/swipe on mobile.
-  slider.addEventListener("touchstart", (event) => {
-    if (!isMobile() || !event.touches[0]) return;
 
-    isTouching = true;
-    startX = event.touches[0].clientX;
-    currentX = startX;
-    stopAutoSlide();
-  }, { passive: true });
+  /* =======================================================
+     TOUCH START
+  ======================================================= */
 
-  slider.addEventListener("touchmove", (event) => {
-    if (!isTouching || !event.touches[0]) return;
-    currentX = event.touches[0].clientX;
-  }, { passive: true });
+  slider.addEventListener(
+    "touchstart",
+    (event) => {
 
-  slider.addEventListener("touchend", () => {
-    if (!isTouching) return;
-
-    const difference = currentX - startX;
-    isTouching = false;
-
-    if (Math.abs(difference) > 45) {
-      if (difference < 0) {
-        next();
-      } else {
-        previous();
+      if (
+        !isMobile() ||
+        !event.touches[0]
+      ) {
+        return;
       }
+
+
+      isTouching = true;
+
+      startX =
+        event.touches[0].clientX;
+
+      currentX = startX;
+
+
+      /* Pause auto slide while touching */
+
+      stopAutoSlide();
+
+    },
+    {
+      passive: true
     }
+  );
 
-    startAutoSlide();
-  });
 
-  // Pause auto-slide while the mobile user is interacting.
-  slider.addEventListener("mouseenter", stopAutoSlide);
-  slider.addEventListener("mouseleave", startAutoSlide);
+  /* =======================================================
+     TOUCH MOVE
+  ======================================================= */
 
-  // Keep layout correct after rotation/resizing.
+  slider.addEventListener(
+    "touchmove",
+    (event) => {
+
+      if (
+        !isTouching ||
+        !event.touches[0]
+      ) {
+        return;
+      }
+
+
+      currentX =
+        event.touches[0].clientX;
+
+    },
+    {
+      passive: true
+    }
+  );
+
+
+  /* =======================================================
+     TOUCH END / SWIPE
+  ======================================================= */
+
+  slider.addEventListener(
+    "touchend",
+    () => {
+
+      if (!isTouching) {
+        return;
+      }
+
+
+      const difference =
+        currentX - startX;
+
+
+      isTouching = false;
+
+
+      /* Swipe threshold */
+
+      if (Math.abs(difference) > 45) {
+
+
+        /* Swipe left */
+
+        if (difference < 0) {
+
+          next();
+
+        }
+
+
+        /* Swipe right */
+
+        else {
+
+          previous();
+
+        }
+
+      }
+
+
+      /* Restart auto slide */
+
+      startAutoSlide();
+
+    }
+  );
+
+
+  /* =======================================================
+     MOUSE ENTER
+     ======================================================= */
+
+  slider.addEventListener(
+    "mouseenter",
+    () => {
+
+      stopAutoSlide();
+
+    }
+  );
+
+
+  /* =======================================================
+     MOUSE LEAVE
+  ======================================================= */
+
+  slider.addEventListener(
+    "mouseleave",
+    () => {
+
+      startAutoSlide();
+
+    }
+  );
+
+
+  /* =======================================================
+     RESIZE
+  ======================================================= */
+
   let resizeTimer;
 
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
 
-    resizeTimer = setTimeout(() => {
-      if (!isMobile()) {
-        currentIndex = 0;
-        applyTransform(false);
-        stopAutoSlide();
-      } else {
-        applyTransform(false);
-        startAutoSlide();
-      }
-    }, 150);
-  });
+  window.addEventListener(
+    "resize",
+    () => {
 
-  // Initial state.
+      clearTimeout(resizeTimer);
+
+
+      resizeTimer = setTimeout(() => {
+
+
+        /* ---------------------------------------------
+           Desktop / Tablet
+        --------------------------------------------- */
+
+        if (!isMobile()) {
+
+          currentIndex = 0;
+
+          applyTransform(false);
+
+          stopAutoSlide();
+
+        }
+
+
+        /* ---------------------------------------------
+           Mobile
+        --------------------------------------------- */
+
+        else {
+
+          applyTransform(false);
+
+          startAutoSlide();
+
+        }
+
+
+      }, 150);
+
+    }
+  );
+
+
+  /* =======================================================
+     INITIAL STATE
+  ======================================================= */
+
   applyTransform(false);
+
   startAutoSlide();
+
 });

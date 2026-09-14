@@ -1115,6 +1115,7 @@ body {
     }
 }
 
+
 /* =========================================================
    MOBILE
    3 cards visible in each row.
@@ -1253,189 +1254,551 @@ body {
 }
 
 
+/* =========================================================
+   AGILE SOLUTIONS - WEB & SOFTWARE PORTFOLIO
+   FIXES ONLY:
+   - Desktop/Laptop kept unchanged
+   - Tablet + Mobile: only 6 original images, seamless scroll
+   - No card/image overlap
+   - Card click pauses marquee
+========================================================= */
+/* =========================================================
+   AGILE SOLUTIONS - WEB & SOFTWARE PORTFOLIO
+   FIX ONLY:
+   - Laptop/Desktop: SAME as original
+   - Tablet + Mobile: exactly the same 6 cards
+   - NO horizontal overlap
+   - Proper JICK-JACK position
+   - Lower JICK-JACK cards are NOT CUT
+   - Original scroll speed kept: 5s
+========================================================= */
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: #111111;
+}
 
 
 /* =========================================================
-   AGILE SOLUTIONS - WEB & SOFTWARE PORTFOLIO
-   Desktop: NO horizontal scroll
-   Tablet: 2 images, NO horizontal scroll
-   Mobile: 1 image + horizontal auto/touch carousel
-   ========================================================= */
+   PORTFOLIO SECTION
+========================================================= */
 
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#fff;
-  color:#101828;
-}
-.agile-portfolio{
-  width:100%;
-  padding:50px 20px;
-  background:#fff;
-  overflow:hidden;
-}
-.portfolio-container{
-  width:min(1280px,100%);
-  margin:0 auto;
-}
-.portfolio-heading{
-  text-align:center;
-  max-width:1050px;
-  margin:0 auto 38px;
-}
-.portfolio-heading h2{
-  margin:0 0 18px;
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:35px;
-  line-height:1.15;
-  font-weight:700;
-  color:#0b1f4b;
-}
-.portfolio-heading h2 span{color:#4169e1}
-.portfolio-heading p{
-  margin:0 auto;
-  max-width:1000px;
-  color:#667085;
-  font-size:17px;
-  line-height:1.7;
-}
-.portfolio-tabs{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:12px;
-  margin:0 auto 36px;
-}
-.portfolio-tab{
-  appearance:none;
-  border:0;
-  min-height:50px;
-  padding:0 24px;
-  border-radius:8px;
-  background:transparent;
-  color:#1d2939;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:.25s ease;
-}
-.portfolio-tab:hover,
-.portfolio-tab.active{
-  background:#4169e1;
-  color:#fff;
-  box-shadow:0 10px 25px rgba(65,105,225,.20);
-}
-.portfolio-tab:focus-visible{
-  outline:3px solid rgba(65,105,225,.30);
-  outline-offset:3px;
+.portfolio-section {
+  width: 100%;
+  overflow: hidden;
+  padding: 65px 0 105px;
+  background: linear-gradient(
+    135deg,
+    #eef5ff 0%,
+    #f5f0ff 50%,
+    #ffffff 100%
+  );
 }
 
-/* IMPORTANT: desktop/tablet are static. No horizontal scrolling. */
-.portfolio-view{
-  width:100%;
-  overflow:hidden;
-}
-.portfolio-panel{
-  display:none;
-  width:100%;
-}
-.portfolio-panel.active{display:block}
-.portfolio-row{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:18px;
-}
-.portfolio-card{
-  display:block;
-  width:100%;
-  aspect-ratio:1/1;
-  overflow:hidden;
-  border-radius:6px;
-  background:#f3f5f8;
-  text-decoration:none;
-  box-shadow:0 7px 22px rgba(16,24,40,.08);
-  -webkit-tap-highlight-color:transparent;
-}
-.portfolio-card img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:transform .35s ease;
-}
-.portfolio-card:hover img{transform:scale(1.025)}
 
-/* TABLET: 2 posters visible. Still NO horizontal scroll. */
-@media (max-width:991px){
-  .agile-portfolio{padding:58px 18px}
-  .portfolio-heading{margin-bottom:30px}
-  .portfolio-heading p{font-size:16px}
-  .portfolio-tabs{
-    justify-content:center;
-    gap:8px;
-    margin-bottom:28px;
-  }
-  .portfolio-tab{
-    min-height:46px;
-    padding:0 17px;
-    font-size:14px;
-  }
-  .portfolio-row{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:15px;
-  }
+/* =========================================================
+   HEADING
+========================================================= */
+
+.portfolio-heading-wrap {
+  width: min(900px, calc(100% - 40px));
+  margin: 0 auto 55px;
+  text-align: center;
 }
 
-/* MOBILE: EXACTLY 1 poster visible; horizontal only.
-   Four posters form a continuous loop. */
-@media (max-width:600px){
-  .agile-portfolio{padding:46px 14px}
-  .portfolio-heading{margin-bottom:25px}
-  .portfolio-heading h2{
-    font-size:32px;
-    line-height:1.2;
-    margin-bottom:14px;
+.portfolio-heading-wrap h2 {
+  margin: 0 0 17px;
+  color: #111111;
+  font-size: clamp(32px, 3.4vw, 48px);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.portfolio-heading-wrap h2 span {
+  color: #2563eb;
+}
+
+.portfolio-heading-wrap p {
+  width: min(800px, 100%);
+  margin: 0 auto;
+  color: #7a7f89;
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   MARQUEE
+========================================================= */
+
+.portfolio-marquee {
+  width: 100%;
+  position: relative;
+
+  /* Horizontal clipping only.
+     IMPORTANT: vertical jick-jack cards must remain visible. */
+  overflow-x: clip;
+  overflow-y: visible;
+
+  padding-bottom: 55px;
+}
+
+
+/* =========================================================
+   TRACK
+========================================================= */
+
+.portfolio-track {
+  display: flex;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  transform: translate3d(0, 0, 0);
+}
+
+
+/* =========================================================
+   PORTFOLIO SET
+========================================================= */
+
+.portfolio-set {
+  width: 100vw;
+  min-width: 100vw;
+  flex: 0 0 100vw;
+
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+
+  gap: 16px;
+
+  padding: 0 18px;
+
+  /* DO NOT hide overflow here.
+     Otherwise the lower jick-jack cards get cut. */
+  overflow: visible;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.portfolio-card {
+  position: relative;
+
+  flex: 0 0 calc((100% - 80px) / 6);
+  width: calc((100% - 80px) / 6);
+
+  height: 300px;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  border-radius: 34px;
+
+  background: #f5f6f8;
+
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.10);
+
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   JICK-JACK / WAVE
+========================================================= */
+
+.portfolio-card-2,
+.portfolio-card-4,
+.portfolio-card-6 {
+  transform: translateY(48px);
+}
+
+
+/* =========================================================
+   FULL WEBSITE SCREENSHOT WINDOW
+========================================================= */
+
+.portfolio-image-window {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+  border-radius: inherit;
+
+  background: #f5f6f8;
+}
+
+
+/* =========================================================
+   FULL WEBSITE SCREENSHOT IMAGE
+========================================================= */
+
+.portfolio-card img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  max-width: none;
+
+  object-fit: contain;
+
+  border-radius: 0;
+
+  transform: translate3d(0, 0, 0);
+
+  transition:
+    transform 8s linear;
+
+  will-change: transform;
+
+  image-rendering: auto;
+}
+
+
+/* =========================================================
+   HOVER IMAGE SCROLL
+========================================================= */
+
+.portfolio-card:hover img {
+  transform:
+    translate3d(
+      0,
+      var(--portfolio-scroll-distance, 0px),
+      0
+    );
+}
+
+
+/* =========================================================
+   LAPTOP / DESKTOP
+   1025px+
+   ORIGINAL BEHAVIOUR KEPT
+========================================================= */
+
+@media (min-width: 1025px) {
+
+  .portfolio-section {
+    padding: 65px 0 105px;
   }
-  .portfolio-heading p{
-    font-size:15px;
-    line-height:1.65;
+
+  .portfolio-marquee {
+    padding-bottom: 55px;
+    clip-path: none;
   }
-  .portfolio-tabs{
-    justify-content:flex-start;
-    overflow-x:auto;
-    scrollbar-width:none;
-    -ms-overflow-style:none;
-    gap:7px;
-    padding:3px 2px 10px;
-    margin-bottom:22px;
-    -webkit-overflow-scrolling:touch;
+
+  .portfolio-track {
+    animation: none !important;
+    transform: translate3d(0, 0, 0) !important;
   }
-  .portfolio-tabs::-webkit-scrollbar{display:none}
-  .portfolio-tab{
-    flex:0 0 auto;
-    min-height:44px;
-    padding:0 16px;
-    font-size:14px;
+
+  .portfolio-set {
+    display: flex;
+    flex-wrap: nowrap;
+
+    gap: 16px;
+
+    padding-left: 18px;
+    padding-right: 18px;
+
+    overflow: visible;
+    clip-path: none;
   }
-  .portfolio-panel{overflow:hidden}
-  .portfolio-row{
-    display:flex;
-    flex-wrap:nowrap;
-    gap:14px;
-    width:max-content;
-    transform:translate3d(0,0,0);
-    will-change:transform;
+
+  .portfolio-card {
+    flex: 0 0 calc((100% - 80px) / 6);
+    width: calc((100% - 80px) / 6);
+
+    height: 300px;
+
+    border-radius: 34px;
   }
-  .portfolio-card{
-    flex:0 0 calc(100vw - 28px);
-    width:calc(100vw - 28px);
-    max-width:none;
-    aspect-ratio:1/1;
+
+  .portfolio-card-2,
+  .portfolio-card-4,
+  .portfolio-card-6 {
+    transform: translateY(48px);
   }
-  .portfolio-card:hover img{transform:none}
+}
+
+
+/* =========================================================
+   TABLET
+   601px - 1024px
+
+   EXACTLY 3 CARDS VISIBLE
+   JICK-JACK KEPT
+   LOWER CARDS NOT CUT
+========================================================= */
+
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  .portfolio-section {
+    padding: 60px 0 100px;
+  }
+
+  .portfolio-heading-wrap {
+    width: min(850px, calc(100% - 40px));
+    margin-bottom: 48px;
+  }
+
+  .portfolio-heading-wrap h2 {
+    font-size: 40px;
+  }
+
+  .portfolio-heading-wrap p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .portfolio-marquee {
+    width: 100%;
+
+    /* Horizontal viewport clipping without cutting the
+       lower jick-jack cards. */
+    overflow: visible;
+    clip-path: inset(0 0 -100px 0);
+
+    padding-bottom: 52px;
+  }
+
+  .portfolio-set {
+    position: relative;
+    width: 100vw;
+    min-width: 100vw;
+    flex: 0 0 100vw;
+
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+
+    gap: 18px;
+
+    padding-left: 18px;
+    padding-right: 18px;
+
+    /* Prevent duplicate cards from bleeding into the
+       neighbouring set horizontally, while preserving
+       the lower jick-jack area vertically. */
+    overflow: visible;
+    clip-path: inset(0 0 -100px 0);
+  }
+
+  .portfolio-card {
+    flex: 0 0 calc((100vw - 72px) / 3);
+    width: calc((100vw - 72px) / 3);
+
+    height: 305px;
+
+    min-width: 0;
+    max-width: calc((100vw - 72px) / 3);
+
+    border-radius: 32px;
+
+    transform: translateY(0);
+  }
+
+  .portfolio-card-2,
+  .portfolio-card-4,
+  .portfolio-card-6 {
+    transform: translateY(42px);
+  }
+
+  .portfolio-track {
+    display: flex;
+    width: max-content;
+
+    /* ORIGINAL SPEED */
+    animation:
+      portfolioInfiniteScroll
+      5s
+      linear
+      infinite !important;
+
+    will-change: transform;
+  }
+
+  .portfolio-track.portfolio-is-paused {
+    animation-play-state: paused !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   0px - 600px
+
+   EXACTLY 2 CARDS VISIBLE
+   JICK-JACK KEPT
+   LOWER CARDS NOT CUT
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .portfolio-section {
+    padding: 48px 0 80px;
+  }
+
+  .portfolio-heading-wrap {
+    width: calc(100% - 30px);
+    margin-bottom: 38px;
+  }
+
+  .portfolio-heading-wrap h2 {
+    margin-bottom: 13px;
+
+    font-size: 30px;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.5px;
+  }
+
+  .portfolio-heading-wrap p {
+    width: 100%;
+
+    font-size: 13.5px;
+
+    line-height: 1.65;
+  }
+
+  .portfolio-marquee {
+    width: 100%;
+
+    /* Horizontal clipping only */
+    overflow-x: clip;
+    overflow-y: visible;
+
+    padding-bottom: 42px;
+  }
+
+  .portfolio-set {
+    position: relative;
+    width: 100vw;
+    min-width: 100vw;
+    flex: 0 0 100vw;
+
+    display: flex;
+
+    flex-wrap: nowrap;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+
+    /* Prevent duplicate cards from bleeding into the
+       neighbouring set horizontally, while preserving
+       the lower jick-jack area vertically. */
+    overflow: visible;
+    clip-path: inset(0 0 -90px 0);
+  }
+
+  .portfolio-card {
+    flex: 0 0 calc((100vw - 28px) / 2);
+    width: calc((100vw - 28px) / 2);
+
+    height: 255px;
+
+    min-width: 0;
+
+    max-width: calc((100vw - 28px) / 2);
+
+    border-radius: 26px;
+
+    box-shadow:
+      0 7px 20px rgba(15, 23, 42, 0.09);
+
+    transform: translateY(0);
+  }
+
+  .portfolio-card-2,
+  .portfolio-card-4,
+  .portfolio-card-6 {
+    transform: translateY(36px);
+  }
+
+  .portfolio-track {
+    display: flex;
+
+    width: max-content;
+
+    /* ORIGINAL SPEED */
+    animation:
+      portfolioInfiniteScroll
+      5s
+      linear
+      infinite !important;
+
+    will-change: transform;
+  }
+
+  .portfolio-track.portfolio-is-paused {
+    animation-play-state: paused !important;
+  }
+
+  .portfolio-card img {
+    transition:
+      transform 6s linear;
+  }
+}
+
+
+/* =========================================================
+   SEAMLESS INFINITE LOOP
+========================================================= */
+
+@keyframes portfolioInfiniteScroll {
+
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .portfolio-track {
+    animation-play-state: paused !important;
+  }
+
+  .portfolio-card img {
+    transition: none;
+  }
 }
 
 
@@ -1472,15 +1835,16 @@ body{
    ========================= */
 
 .industries-container h2 {
-    width: 100%;
-    margin: 0 0 24px;
-    padding: 0 20px;
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: clamp(25px, 2.5vw, 38px);
-    line-height: 1.2;
-    font-weight: 700;
-    color: #07143b;
+    margin: 0 0 9px;
+  color: #0b1830;
+  font-size: clamp(27px, 3vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -1px;
+  font-weight: 800;
+  text-align: center;
+}
+.industries-container h2 span {
+  color: #2563eb;
 }
 
 /* =========================
@@ -2249,3 +2613,18 @@ body {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
