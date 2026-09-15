@@ -433,11 +433,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const slides = [
         {
-            src: "assets/industries-mobile-1.jpg",
+            src: "assets/industries-we-serve-web-development-mobile.jpg",
             alt: "Industries served - mobile view 1"
         },
         {
-            src: "assets/industries-mobile-2.jpg",
+            src: "assets/industries-we-serve-software-digital-solutions.jpg",
             alt: "Industries served - mobile view 2"
         }
     ];
