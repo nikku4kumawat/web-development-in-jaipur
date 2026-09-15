@@ -188,7 +188,17 @@ h1{
   color:var(--black);
 }
 h1 span{color:var(--blue)}
+.hero-content h1 {
+    font-family: inherit;
+}
 
+.hero-content h1 span {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: normal;
+    letter-spacing: inherit;
+}
 .hero-text{
   max-width:650px;
   margin:17px 0 17px;
@@ -908,15 +918,12 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.96);
 }
 
-.icon svg {
+.icon i {
     display: block;
     width: 24px;
     height: 24px;
-    fill: none;
-    stroke: #075bea;
-    stroke-width: 1.9;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    font-size: 24px;
+    color: #075bea;
 }
 
 /* HEADING - BELOW ICON */
@@ -1056,9 +1063,10 @@ body {
         flex-basis: 46px;
     }
 
-    .icon svg {
+    .icon i {
         width: 23px;
         height: 23px;
+        font-size: 23px;
     }
 
     .agile-service-card h2 {
@@ -1104,9 +1112,10 @@ body {
         flex-basis: 44px;
     }
 
-    .icon svg {
+    .icon i {
         width: 22px;
         height: 22px;
+        font-size: 22px;
     }
 
     .agile-service-card h2 {
@@ -1206,9 +1215,10 @@ body {
         flex-basis: 31px;
     }
 
-    .icon svg {
+    .icon i {
         width: 16px;
         height: 16px;
+        font-size: 16px;
     }
 
     .agile-service-card h2 {
@@ -1588,9 +1598,9 @@ body {
 
   .portfolio-set {
     position: relative;
-    width: 100vw;
-    min-width: 100vw;
-    flex: 0 0 100vw;
+    width: max-content;
+    min-width: max-content;
+    flex: 0 0 auto;
 
     display: flex;
     flex-wrap: nowrap;
@@ -1698,9 +1708,9 @@ body {
 
   .portfolio-set {
     position: relative;
-    width: 100vw;
-    min-width: 100vw;
-    flex: 0 0 100vw;
+    width: max-content;
+    min-width: max-content;
+    flex: 0 0 auto;
 
     display: flex;
 
@@ -1850,7 +1860,6 @@ body {
 /* =========================
    DESKTOP / LAPTOP / TABLET
    ========================= */
-
 
 .industries-desktop-view {
     display: block;
@@ -2629,3 +2638,60 @@ body {
 
 
 
+
+
+/* =========================================================
+   TARGETED FIXES - CLICKABLE EXPERTISE + INDUSTRIES
+   No visual redesign.
+========================================================= */
+
+.expertise-grid .expertise-link {
+  min-height: 31px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #D8E4F3;
+  border-radius: 999px;
+  background: #FBFDFF;
+  color: #22519C;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+.expertise-grid .expertise-link:hover {
+  border-color: #B6D0F1;
+  background: #F7FBFF;
+}
+
+.industry-image-link {
+  display: block;
+  width: 100%;
+  line-height: 0;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.industry-image-link img {
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .industry-mobile-frame {
+    touch-action: pan-y;
+  }
+
+  .industry-mobile-frame .industry-image-link {
+    width: 100%;
+    display: block;
+  }
+
+  .industries-mobile-image {
+    pointer-events: none;
+  }
+}

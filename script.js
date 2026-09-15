@@ -422,10 +422,12 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
 
     const mobileImage = document.getElementById("industryMobileImage");
+    const mobileFrame = document.querySelector(".industry-mobile-frame");
+    const mobileLink = document.getElementById("industryMobileLink");
     const leftArrow = document.querySelector(".industry-arrow-left");
     const rightArrow = document.querySelector(".industry-arrow-right");
 
-    if (!mobileImage || !leftArrow || !rightArrow) {
+    if (!mobileImage || !mobileFrame || !mobileLink || !leftArrow || !rightArrow) {
         return;
     }
 
@@ -508,7 +510,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let touchStartX = 0;
     let touchEndX = 0;
 
-    mobileImage.addEventListener(
+    let ignoreNextImageClick = false;
+
+    mobileFrame.addEventListener(
         "touchstart",
         function (event) {
 
@@ -520,18 +524,36 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    mobileImage.addEventListener(
+    mobileFrame.addEventListener(
         "touchend",
         function (event) {
 
             touchEndX =
                 event.changedTouches[0].screenX;
 
+            const swipeDistance = touchStartX - touchEndX;
+
+            if (Math.abs(swipeDistance) >= 50) {
+                ignoreNextImageClick = true;
+                window.setTimeout(function () {
+                    ignoreNextImageClick = false;
+                }, 500);
+            }
+
             handleSwipe();
 
         },
         { passive: true }
     );
+
+    /* A normal tap on the image calls Agile Solutions.
+       A swipe changes the image without opening the phone dialer. */
+    mobileLink.addEventListener("click", function (event) {
+        if (ignoreNextImageClick) {
+            event.preventDefault();
+            ignoreNextImageClick = false;
+        }
+    });
 
 
     function handleSwipe() {
@@ -1157,4 +1179,162 @@ document.addEventListener("DOMContentLoaded", () => {
 
   startAutoSlide();
 
+});
+
+/* =========================================================
+   TARGETED MOBILE AUTO-SCROLL FIXES
+   - Services: one screen (6 cards / 3 columns x 2 rows)
+     every 3 seconds on phones.
+   - User arrow/touch interaction restarts the 3s timer.
+   - Industries/reviews use their existing carousel behavior.
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const servicesScroll = document.querySelector(".agile-services-scroll");
+    const servicesGrid = document.querySelector(".agile-services-grid");
+    const serviceLeft = document.querySelector(".agile-mobile-scroll-left");
+    const serviceRight = document.querySelector(".agile-mobile-scroll-right");
+
+    if (!servicesScroll || !servicesGrid) {
+        return;
+    }
+
+    let serviceAutoTimer = null;
+    let serviceTouching = false;
+
+    function isPhoneLayout() {
+        return window.innerWidth <= 600;
+    }
+
+    function getServiceStep() {
+        const card = servicesGrid.querySelector(".agile-service-card");
+        if (!card) return servicesScroll.clientWidth;
+
+        const cardWidth = card.getBoundingClientRect().width;
+        const styles = window.getComputedStyle(servicesGrid);
+        const columnGap = parseFloat(styles.columnGap || styles.gap || "0");
+
+        return (cardWidth + columnGap) * 3;
+    }
+
+    function getServiceMaxScroll() {
+        return Math.max(
+            0,
+            servicesScroll.scrollWidth - servicesScroll.clientWidth
+        );
+    }
+
+    function stopServiceAutoScroll() {
+        if (serviceAutoTimer) {
+            window.clearInterval(serviceAutoTimer);
+            serviceAutoTimer = null;
+        }
+    }
+
+    function startServiceAutoScroll() {
+        stopServiceAutoScroll();
+
+        if (!isPhoneLayout()) {
+            return;
+        }
+
+        serviceAutoTimer = window.setInterval(function () {
+            if (!isPhoneLayout() || serviceTouching) {
+                return;
+            }
+
+            const maxScroll = getServiceMaxScroll();
+            const step = getServiceStep();
+
+            if (maxScroll <= 2) {
+                return;
+            }
+
+            if (servicesScroll.scrollLeft >= maxScroll - 2) {
+                servicesScroll.scrollTo({
+                    left: 0,
+                    behavior: "smooth"
+                });
+            } else {
+                servicesScroll.scrollBy({
+                    left: Math.min(step, maxScroll - servicesScroll.scrollLeft),
+                    behavior: "smooth"
+                });
+            }
+        }, 3000);
+    }
+
+    function restartServiceAutoScroll() {
+        startServiceAutoScroll();
+    }
+
+    servicesScroll.addEventListener("touchstart", function () {
+        if (isPhoneLayout()) {
+            serviceTouching = true;
+            stopServiceAutoScroll();
+        }
+    }, { passive: true });
+
+    servicesScroll.addEventListener("touchend", function () {
+        serviceTouching = false;
+        restartServiceAutoScroll();
+    }, { passive: true });
+
+    servicesScroll.addEventListener("touchcancel", function () {
+        serviceTouching = false;
+        restartServiceAutoScroll();
+    }, { passive: true });
+
+    if (serviceLeft) {
+        serviceLeft.addEventListener("click", restartServiceAutoScroll);
+    }
+
+    if (serviceRight) {
+        serviceRight.addEventListener("click", restartServiceAutoScroll);
+    }
+
+    window.addEventListener("resize", function () {
+        restartServiceAutoScroll();
+    });
+
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            stopServiceAutoScroll();
+        } else {
+            restartServiceAutoScroll();
+        }
+    });
+
+    startServiceAutoScroll();
+});
+
+
+/* =========================================================
+   REVIEW AUTO-SLIDE SAFETY FOR iPHONE / iOS
+   Keep the existing 4-second speed and one-card layout.
+   Restart when the page becomes active again.
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const reviewsSlider = document.getElementById("reviewsSlider");
+    if (!reviewsSlider) return;
+
+    function restartReviewsIfPhone() {
+        if (window.innerWidth <= 767) {
+            /* Trigger a resize event so the existing review carousel
+               recalculates its state and restarts its 4s timer. */
+            window.dispatchEvent(new Event("resize"));
+        }
+    }
+
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+            window.setTimeout(restartReviewsIfPhone, 100);
+        }
+    });
+
+    window.addEventListener("pageshow", function () {
+        window.setTimeout(restartReviewsIfPhone, 100);
+    });
 });
