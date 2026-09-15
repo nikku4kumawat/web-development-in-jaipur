@@ -188,7 +188,7 @@ h1{
   color:var(--black);
 }
 h1 span{color:var(--blue)}
-.hero-content h1 {
+/* .hero-content h1 {
     font-family: inherit;
 }
 
@@ -198,7 +198,17 @@ h1 span{color:var(--blue)}
     font-weight: inherit;
     font-style: normal;
     letter-spacing: inherit;
-}
+} */
+.hero-content h1 .ampersand {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 1.08em !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  display: inline-block;
+  color: inherit !important;
+  line-height: 1 !important;
+} 
+
 .hero-text{
   max-width:650px;
   margin:17px 0 17px;
