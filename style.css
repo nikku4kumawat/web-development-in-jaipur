@@ -267,7 +267,7 @@ h1 span{color:var(--blue)}
   transition:.2s ease;
 }
 .primary-btn{
-  width:270px;
+  width:170px;
   background:var(--blue);
   color:#fff;
   box-shadow:0 8px 18px rgba(20,110,232,.2);
